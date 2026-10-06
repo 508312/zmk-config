@@ -1,11 +1,25 @@
 #include <zephyr/dt-bindings/gpio/gpio.h>
 
+/* Unbind Pin 017 (P0.17 / Pro Micro 2) by disabling the I2C bus used for the OLED */
+&pro_micro_i2c {
+    status = "disabled";
+};
+
+/* Unbind Pin 020 (P0.20) by disabling the SPI bus usually reserved for RGB/External displays */
+&spi1 {
+    status = "disabled";
+};
+
 / {
     kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";
+
         row-gpios
             = <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             , <&pro_micro 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // bypass for dead pin 100
+            , <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Bypassed 100 -> 020
             , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             , <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
@@ -14,7 +28,7 @@
             = <&pro_micro 19 GPIO_ACTIVE_HIGH>
             , <&pro_micro 18 GPIO_ACTIVE_HIGH>
             , <&pro_micro 15 GPIO_ACTIVE_HIGH>
-            , <&gpio0 6 GPIO_ACTIVE_HIGH>     // bypass for dead pin 115
+            , <&gpio0 17 GPIO_ACTIVE_HIGH>     // Bypassed 115 -> 017
             , <&pro_micro 16 GPIO_ACTIVE_HIGH>
             , <&pro_micro 10 GPIO_ACTIVE_HIGH>
             ;
